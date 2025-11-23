@@ -1,0 +1,136 @@
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; background: #1a1a2e; }
+        #canvas { display: block; width: 100%; height: 100vh; }
+        #hud { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; color: white; }
+        
+        /* Panel de estado del EPP - MÁS PEQUEÑO */
+        #ppe-status { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.9); padding: 15px; border-radius: 10px; border: 2px solid #00ff88; max-width: 280px; box-shadow: 0 4px 20px rgba(0,255,136,0.3); }
+        #ppe-status h3 { font-size: 15px !important; margin-bottom: 10px !important; padding-bottom: 8px !important; }
+        .ppe-item { display: flex; align-items: center; margin: 8px 0; font-size: 14px; cursor: pointer; pointer-events: all; padding: 10px; border-radius: 8px; transition: all 0.3s; position: relative; border: 2px solid transparent; }
+        .ppe-item:hover { background: rgba(255,255,255,0.15); transform: translateX(5px); border-color: #ffd700; }
+        .ppe-item.equipped { color: #00ff88; background: rgba(0,255,136,0.15); border-color: #00ff88; box-shadow: 0 2px 10px rgba(0,255,136,0.3); }
+        .ppe-item.missing { color: #ff4444; background: rgba(255,68,68,0.1); }
+        .ppe-item.in-progress { color: #ffaa00; background: rgba(255,170,0,0.15); border-color: #ffaa00; animation: pulse-border 2s infinite; }
+        @keyframes pulse-border { 0%, 100% { border-color: #ffaa00; } 50% { border-color: #ff6600; } }
+        .ppe-icon { width: 30px; height: 30px; margin-right: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 20px; }
+        .ppe-label { flex: 1; font-size: 13px; }
+        .ppe-quality { font-size: 11px; color: #ffd700; margin-top: 2px; }
+        .mini-progress { position: absolute; bottom: 2px; left: 12px; right: 12px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; }
+        .mini-progress-fill { height: 100%; background: linear-gradient(90deg, #ffaa00, #ff6600); width: 0%; transition: width 0.3s; }
+        
+        /* Panel de puntuación mejorado */
+        #score { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.9); padding: 20px; border-radius: 12px; border: 2px solid #ffd700; min-width: 300px; box-shadow: 0 4px 20px rgba(255,215,0,0.3); }
+        #score h3 { color: #ffd700; margin-bottom: 15px; text-align: center; font-size: 20px; }
+        .score-main { font-size: 36px; text-align: center; color: #00ff88; font-weight: bold; margin: 15px 0; text-shadow: 0 0 10px rgba(0,255,136,0.5); }
+        .score-breakdown { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .score-item { display: flex; justify-content: space-between; margin: 8px 0; padding: 8px; border-radius: 5px; background: rgba(255,255,255,0.03); }
+        .score-label { color: #aaa; font-size: 14px; }
+        .score-value { color: #00ff88; font-weight: bold; font-size: 16px; }
+        .score-value.negative { color: #ff4444; }
+        .quality-badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; margin-top: 10px; }
+        .quality-excellent { background: linear-gradient(135deg, #00ff88, #00cc6a); color: #000; }
+        .quality-good { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; }
+        .quality-fair { background: linear-gradient(135deg, #ffaa00, #ff6600); color: #fff; }
+        .quality-poor { background: linear-gradient(135deg, #ff4444, #cc0000); color: #fff; }
+        
+        /* Panel de información de zona - CENTRO SUPERIOR */
+        #zone-info { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.92); padding: 15px 25px; border-radius: 12px; border: 2px solid #ffd700; max-width: 500px; box-shadow: 0 4px 20px rgba(255,215,0,0.4); text-align: center; pointer-events: none; }
+        #zone-info h4 { color: #ffd700; font-size: 18px; margin: 0 0 8px 0; text-shadow: 0 0 10px rgba(255,215,0,0.5); font-weight: bold; }
+        #zone-info p { color: #fff; font-size: 13px; margin: 0 0 10px 0; line-height: 1.4; }
+        .zone-reqs { margin-top: 10px; }
+        .zone-reqs strong { color: #ffd700; font-size: 14px; display: block; margin-bottom: 8px; }
+        .zone-req-item { padding: 5px 10px; margin: 4px 0; border-radius: 5px; font-size: 12px; }
+        .zone-req-item.met { background: rgba(0,255,136,0.25); color: #00ff88; border: 1px solid #00ff88; }
+        .zone-req-item.missing { background: rgba(255,68,68,0.25); color: #ff4444; border: 1px solid #ff4444; }
+        
+        #controls { position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.85); padding: 15px; border-radius: 10px; font-size: 14px; }
+        #camera-toggle-btn { position: absolute; bottom: 20px; left: 200px; background: rgba(0,120,255,0.9); padding: 10px 15px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; pointer-events: all; border: 2px solid #00ff88; color: white; transition: all 0.3s; }
+        #camera-toggle-btn:hover { background: rgba(0,150,255,1); transform: scale(1.05); }
+        #danger-warning { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: rgba(255,0,0,0.95); padding: 30px; border-radius: 15px; font-size: 24px; font-weight: bold; display: none; text-align: center; animation: pulse 1s infinite; z-index: 100; }
+        @keyframes pulse { 0%,100% { opacity: 0.8; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 1; transform: translate(-50%,-50%) scale(1.05); } }
+        
+        /* Modal de capacitación mejorado */
+        #training-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: rgba(0,0,0,0.98); padding: 35px; border-radius: 20px; max-width: 1000px; max-height: 90vh; overflow-y: auto; display: none; pointer-events: all; border: 3px solid #00ff88; z-index: 200; box-shadow: 0 10px 50px rgba(0,255,136,0.4); }
+        #training-modal h2 { color: #00ff88; margin-bottom: 25px; font-size: 32px; text-align: center; text-shadow: 0 0 15px rgba(0,255,136,0.5); }
+        
+        .training-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin: 25px 0; }
+        .instruction-panel { background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,170,0,0.05)); padding: 25px; border-radius: 12px; border: 2px solid #ffd700; box-shadow: 0 4px 15px rgba(255,215,0,0.2); }
+        .interaction-panel { background: rgba(0,0,0,0.6); padding: 25px; border-radius: 12px; border: 2px solid #00ff88; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 450px; position: relative; }
+        
+        .step-number { display: inline-block; width: 32px; height: 32px; background: #ffd700; color: #000; border-radius: 50%; text-align: center; line-height: 32px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-size: 22px; color: #ffd700; margin-bottom: 18px; font-weight: bold; display: flex; align-items: center; }
+        .step-content { line-height: 1.9; font-size: 16px; margin-bottom: 15px; color: #e0e0e0; }
+        .step-list { margin: 15px 0; padding-left: 20px; }
+        .step-list li { margin: 10px 0; color: #ccc; position: relative; padding-left: 10px; }
+        .step-list li::before { content: "▸"; position: absolute; left: -15px; color: #ffd700; font-weight: bold; }
+        
+        .step-action { background: rgba(255,215,0,0.25); padding: 18px; border-radius: 10px; border-left: 5px solid #ffd700; margin-top: 18px; box-shadow: 0 2px 10px rgba(255,215,0,0.2); }
+        .step-action strong { color: #ffd700; display: block; margin-bottom: 10px; font-size: 17px; }
+        
+        .safety-tip { background: rgba(0,255,136,0.15); padding: 15px; border-radius: 10px; border-left: 5px solid #00ff88; margin-top: 15px; }
+        .safety-tip strong { color: #00ff88; display: block; margin-bottom: 8px; }
+        
+        .warning-box { background: rgba(255,68,68,0.2); padding: 15px; border-radius: 10px; border-left: 5px solid #ff4444; margin-top: 15px; }
+        .warning-box strong { color: #ff4444; display: block; margin-bottom: 8px; }
+        
+        /* Objetos interactivos mejorados */
+        .interactive-object { width: 200px; height: 200px; cursor: grab; transition: all 0.3s; position: relative; user-select: none; filter: drop-shadow(0 4px 10px rgba(255,215,0,0.3)); }
+        .interactive-object:hover { transform: scale(1.05); filter: drop-shadow(0 6px 15px rgba(255,215,0,0.5)); }
+        .interactive-object:active { cursor: grabbing; transform: scale(0.95); }
+        
+        .interaction-hint { text-align: center; color: #ffd700; margin-top: 20px; font-size: 15px; animation: blink 1.5s infinite; font-weight: 500; }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+        
+        .gesture-area { width: 320px; height: 320px; border: 3px dashed #ffd700; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: rgba(255,215,0,0.05); }
+        .gesture-area.active { background: rgba(0,255,136,0.15); border-color: #00ff88; animation: success-glow 0.5s; }
+        @keyframes success-glow { 0% { box-shadow: 0 0 0 rgba(0,255,136,0.5); } 50% { box-shadow: 0 0 30px rgba(0,255,136,0.8); } 100% { box-shadow: 0 0 0 rgba(0,255,136,0); } }
+        
+        .task-complete { background: linear-gradient(135deg, rgba(0,255,136,0.4), rgba(0,204,106,0.3)); border: 3px solid #00ff88; padding: 25px; border-radius: 15px; text-align: center; font-size: 26px; color: #00ff88; animation: celebration 0.6s; box-shadow: 0 6px 20px rgba(0,255,136,0.4); }
+        @keyframes celebration { 0% { transform: scale(0.5) rotate(-5deg); opacity: 0; } 50% { transform: scale(1.15) rotate(2deg); } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+        
+        .progress-bar { width: 100%; height: 10px; background: rgba(255,255,255,0.2); border-radius: 5px; margin: 18px 0; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #00ff88, #00cc6a); width: 0%; transition: width 0.5s; box-shadow: 0 0 10px rgba(0,255,136,0.5); }
+        
+        .training-progress-bar { width: 100%; height: 30px; background: rgba(255,255,255,0.1); border-radius: 15px; margin: 25px 0; overflow: hidden; position: relative; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
+        .training-progress-fill { height: 100%; background: linear-gradient(90deg, #ffd700, #ffaa00); width: 0%; transition: width 0.5s; box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+        .training-progress-text { position: absolute; width: 100%; text-align: center; line-height: 30px; font-weight: bold; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); font-size: 15px; }
+        
+        /* Indicadores de calidad de equipamiento */
+        .quality-indicator { display: flex; align-items: center; margin-top: 15px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; }
+        .quality-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+        .quality-dot.excellent { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
+        .quality-dot.good { background: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        .quality-dot.fair { background: #ffaa00; box-shadow: 0 0 10px #ffaa00; }
+        .quality-dot.poor { background: #ff4444; box-shadow: 0 0 10px #ff4444; }
+        
+        .btn { pointer-events: all; background: #00ff88; color: #000; border: none; padding: 12px 25px; margin: 8px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s; font-size: 15px; box-shadow: 0 4px 10px rgba(0,255,136,0.3); }
+        .btn:hover:not(:disabled) { background: #00cc6a; transform: scale(1.05); box-shadow: 0 6px 15px rgba(0,255,136,0.5); }
+        .btn:disabled { background: #555; cursor: not-allowed; opacity: 0.5; }
+        .btn-danger { background: #ff4444; color: white; }
+        .btn-danger:hover { background: #cc0000; }
+        .btn-secondary { background: #666; color: white; }
+        .btn-secondary:hover { background: #888; }
+        
+        /* Pantalla de menú */
+        #menu-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: all; z-index: 300; }
+        #menu-screen h1 { font-size: 52px; color: #00ff88; margin-bottom: 25px; text-shadow: 0 0 25px rgba(0,255,136,0.6); }
+        #menu-screen p { font-size: 20px; color: #fff; margin-bottom: 45px; text-align: center; max-width: 650px; padding: 0 20px; line-height: 1.6; }
+        .menu-btn { background: #00ff88; color: #000; border: none; padding: 22px 45px; margin: 12px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 19px; transition: all 0.3s; pointer-events: all; box-shadow: 0 6px 20px rgba(0,255,136,0.4); }
+        .menu-btn:hover { background: #00cc6a; transform: scale(1.12); box-shadow: 0 8px 30px rgba(0,255,136,0.6); }
+        
+        #scenario-info { position: absolute; bottom: 100px; right: 20px; background: rgba(0,120,255,0.95); padding: 20px; border-radius: 10px; max-width: 350px; display: none; pointer-events: all; border: 2px solid #00ff88; }
+        .clickable-hotspot { position: absolute; width: 40px; height: 40px; border: 3px solid #ffd700; border-radius: 50%; cursor: pointer; animation: pulse-ring 2s infinite; background: rgba(255,215,0,0.3); }
+        @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.5; } 100% { transform: scale(0.8); opacity: 1; } }
+        
+        /* Efectos de partículas para completar tareas */
+        .confetti { position: absolute; width: 10px; height: 10px; background: #ffd700; animation: confetti-fall 2s ease-out forwards; pointer-events: none; }
+        @keyframes confetti-fall { to { transform: translateY(400px) rotate(360deg); opacity: 0; } }
+        
+        /* Scrollbar personalizado */
+        #training-modal::-webkit-scrollbar { width: 10px; }
+        #training-modal::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        #training-modal::-webkit-scrollbar-thumb { background: #00ff88; border-radius: 10px; }
+        #training-modal::-webkit-scrollbar-thumb:hover { background: #00cc6a; }
+        
+        /* Contador de tiempo de equipamiento */
+        .equip-timer { position: absolute; top: 20px; right: 20px; background: rgba(255,170,0,0.9); padding: 10px 20px; border-radius: 8px; font-size: 18px; font-weight: bold; color: #fff; }
