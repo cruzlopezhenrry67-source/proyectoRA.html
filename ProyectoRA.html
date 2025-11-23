@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de EPP Industrial</title>
+    <link rel="stylesheet" href="estilosRA.css">
+</head>
+<body>
+<div id="menu-screen">
+        <h1>🏭 Simulador de EPP Industrial</h1>
+        <p>Sistema de Capacitación Interactiva en Equipo de Protección Personal<br>Aprende el proceso correcto de equipamiento con instrucciones paso a paso detalladas</p>
+        <button class="menu-btn" id="start-training-btn">🎓 Iniciar Capacitación</button>
+        <button class="menu-btn" id="start-free-btn">🚀 Modo Libre</button>
+    </div>
+    
+    <canvas id="canvas"></canvas>
+    
+    <div id="hud">
+        <div id="ppe-status">
+            <h3 style="margin-bottom: 15px; border-bottom: 2px solid #00ff88; padding-bottom: 10px;">📋 Estado del EPP</h3>
+            <div class="ppe-item missing" id="helmet-status">
+                <span class="ppe-icon">⛑️</span>
+                <div class="ppe-label">
+                    <div>Casco de Seguridad</div>
+                    <div class="ppe-quality" style="display:none;"></div>
+                </div>
+                <div class="mini-progress"><div class="mini-progress-fill" id="helmet-mini-progress"></div></div>
+            </div>
+            <div class="ppe-item missing" id="goggles-status">
+                <span class="ppe-icon">🥽</span>
+                <div class="ppe-label">
+                    <div>Gafas de Protección</div>
+                    <div class="ppe-quality" style="display:none;"></div>
+                </div>
+                <div class="mini-progress"><div class="mini-progress-fill" id="goggles-mini-progress"></div></div>
+            </div>
+            <div class="ppe-item missing" id="gloves-status">
+                <span class="ppe-icon">🧤</span>
+                <div class="ppe-label">
+                    <div>Guantes Industriales</div>
+                    <div class="ppe-quality" style="display:none;"></div>
+                </div>
+                <div class="mini-progress"><div class="mini-progress-fill" id="gloves-mini-progress"></div></div>
+            </div>
+            <div class="ppe-item missing" id="boots-status">
+                <span class="ppe-icon">🥾</span>
+                <div class="ppe-label">
+                    <div>Botas de Seguridad</div>
+                    <div class="ppe-quality" style="display:none;"></div>
+                </div>
+                <div class="mini-progress"><div class="mini-progress-fill" id="boots-mini-progress"></div></div>
+            </div>
+            <div class="ppe-item missing" id="vest-status">
+                <span class="ppe-icon">🦺</span>
+                <div class="ppe-label">
+                    <div>Chaleco Reflectante</div>
+                    <div class="ppe-quality" style="display:none;"></div>
+                </div>
+                <div class="mini-progress"><div class="mini-progress-fill" id="vest-mini-progress"></div></div>
+            </div>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #00ff88;">
+                <div>Progreso General: <span id="progress-text">0/5</span></div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            </div>
+        </div>
+        
+        <div id="score">
+            <h3>🏆 Puntuación</h3>
+            <div class="score-main" id="score-value">0</div>
+            <div class="score-breakdown">
+                <div class="score-item">
+                    <span class="score-label">EPP Equipados:</span>
+                    <span class="score-value" id="ppe-score">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Calidad Promedio:</span>
+                    <span class="score-value" id="quality-score">0%</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Capacitaciones:</span>
+                    <span class="score-value" id="trainings-completed">0/5</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Tiempo Total:</span>
+                    <span class="score-value" id="time-score">0s</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Penalizaciones:</span>
+                    <span class="score-value negative" id="penalties-score">0</span>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 15px;">
+                <div class="quality-badge quality-fair" id="overall-badge">SIN EVALUAR</div>
+            </div>
+        </div>
+        
+        <div id="zone-info" style="display:none;">
+            <h4 id="zone-name">Zona de Trabajo</h4>
+            <p id="zone-description" style="font-size: 14px; margin: 10px 0; line-height: 1.5;"></p>
+            <div class="zone-reqs">
+                <strong style="color: #ffd700; display: block; margin-bottom: 8px;">EPP Requerido:</strong>
+                <div id="zone-requirements"></div>
+            </div>
+        </div>
+        
+        <div id="controls">
+            <strong>⌨️ Controles:</strong><br>
+            WASD - Moverse<br>
+            Mouse - Mirar alrededor<br>
+            Click - Interactuar<br>
+            V - Cambiar cámara
+        </div>
+        
+        <button id="camera-toggle-btn">📷 Vista: 3ra Persona</button>
+        
+        <div id="danger-warning">
+            <div>⚠️ ZONA PELIGROSA ⚠️</div>
+            <div id="danger-text" style="font-size: 18px; margin-top: 10px;"></div>
+        </div>
+        
+        <div id="scenario-info">
+            <h3 style="margin-bottom: 10px;">⚠️ Zona de Riesgo</h3>
+            <p id="scenario-description"></p>
+            <p style="margin-top: 10px;"><strong>EPP Requerido:</strong> <span id="scenario-ppe"></span></p>
+            <button class="btn btn-secondary" id="close-scenario-btn">Cerrar</button>
+        </div>
+    </div>
+    
+    <div id="training-modal">
+        <h2 id="training-title">Capacitación de EPP</h2>
+        
+        <div class="training-progress-bar">
+            <div class="training-progress-fill" id="training-progress-fill"></div>
+            <div class="training-progress-text" id="training-progress-text">Paso 0 de 0</div>
+        </div>
+        
+        <div class="training-layout">
+            <div class="instruction-panel" id="instruction-panel">
+                <!-- Las instrucciones se cargarán dinámicamente aquí -->
+            </div>
+            
+            <div class="interaction-panel" id="interaction-panel">
+                <!-- La interacción se cargará dinámicamente aquí -->
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn btn-secondary" id="cancel-training-btn">Cancelar</button>
+            <button class="btn" id="next-step-btn" style="display:none;">Siguiente Paso →</button>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="RA.js"></script>
+</body>
+</html>
